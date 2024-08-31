@@ -28,7 +28,7 @@ def has_replied(client, mention):
     return False
 
 
-def post_reply(client, mention, images, alt_texts):
+def post_reply(client, mention, images, alt_texts, reference):
     # Post a reply with images
     embed = models.AppBskyEmbedImages.Main(
         images=[
@@ -42,19 +42,17 @@ def post_reply(client, mention, images, alt_texts):
         ]
     )
 
-    client.app.bsky.feed.post(
-        models.AppBskyFeedPost.Main(
-            text="Here are the generated images:",
-            reply=models.AppBskyFeedPost.ReplyRef(
-                parent=models.AppBskyFeedPost.ReplyRef.Parent(
-                    uri=mention.uri, cid=mention.cid
-                ),
-                root=models.AppBskyFeedPost.ReplyRef.Root(
-                    uri=mention.uri, cid=mention.cid
-                ),
-            ),
-            embed=embed,
-        )
+    client.app.bsky.feed.post.create(
+        repo=client.me.did,
+        record={
+            "text": f"Here are the generated images for {reference}:",
+            "reply": {
+                "parent": {"uri": mention.uri, "cid": mention.cid},
+                "root": {"uri": mention.uri, "cid": mention.cid},
+            },
+            "embed": embed,
+            "createdAt": datetime.now(timezone.utc).isoformat(),
+        },
     )
 
 
@@ -69,8 +67,8 @@ def main():
 
     for mention in new_mentions:
         if not has_replied(client, mention):
-            images, alt_texts = generate_images(mention.record.text)
-            post_reply(client, mention, images, alt_texts)
+            images, alt_texts, reference = generate_images(mention.record.text)
+            post_reply(client, mention, images, alt_texts, reference)
 
 
 if __name__ == "__main__":

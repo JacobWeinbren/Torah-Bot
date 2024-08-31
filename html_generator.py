@@ -1,28 +1,7 @@
 import random
 
 
-def generate_html_content(reference, paired_lines):
-    colors = [
-        "red",
-        "orange",
-        "amber",
-        "yellow",
-        "lime",
-        "green",
-        "emerald",
-        "teal",
-        "cyan",
-        "sky",
-        "blue",
-        "indigo",
-        "violet",
-        "purple",
-        "fuchsia",
-        "pink",
-        "rose",
-    ]
-    color1, color2 = random.sample(colors, 2)
-
+def generate_html_content(reference, paired_lines, color1, color2):
     content = "\n".join(
         f'<div class="mb-8">'
         f'<div class="text-right text-2xl sm:text-3xl md:text-4xl leading-relaxed text-gray-800 mb-2" dir="rtl">{h}</div>'
