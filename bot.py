@@ -18,21 +18,14 @@ def check_mentions(client, last_checked):
     return new_mentions
 
 
-def has_replied(client, mention, max_depth=3):
-    def check_replies(replies, current_depth=0):
-        if replies and current_depth < max_depth:
-            for reply in replies:
-                if reply.post.author.did == client.me.did:
-                    # Check if this reply is a direct response to the original mention
-                    if reply.post.record.reply.parent.uri == mention.uri:
-                        return True
-                if hasattr(reply, "replies"):
-                    if check_replies(reply.replies, current_depth + 1):
-                        return True
-        return False
+def has_replied(client, mention):
+    # Get the direct replies to the mention
+    replies = client.app.bsky.feed.get_post_thread(
+        {"uri": mention.uri, "depth": 1}
+    ).thread.replies
 
-    thread = client.app.bsky.feed.get_post_thread({"uri": mention.uri}).thread
-    return check_replies(thread.replies)
+    # Check if any of the direct replies are from the bot
+    return any(reply.post.author.did == client.me.did for reply in replies)
 
 
 def post_reply(client, mention, images, alt_texts, reference):
