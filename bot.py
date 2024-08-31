@@ -70,8 +70,8 @@ def main():
     client = Client()
     client.login(os.environ["BLUESKY_HANDLE"], os.environ["BLUESKY_PASSWORD"])
 
-    # Set last_checked to 15 minutes ago in UTC
-    last_checked = datetime.now(timezone.utc) - timedelta(minutes=15)
+    # Set last_checked to 30 minutes ago in UTC
+    last_checked = datetime.now(timezone.utc) - timedelta(minutes=30)
 
     new_mentions = check_mentions(client, last_checked)
 
