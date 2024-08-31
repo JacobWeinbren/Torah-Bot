@@ -6,8 +6,9 @@ from utils import save_image
 
 
 def process_input(input_text):
-    # Remove username (assuming it's at the beginning and followed by a space)
-    text_without_username = " ".join(input_text.split()[1:])
+    # Remove words starting with '@'
+    words = input_text.split()
+    text_without_username = " ".join(word for word in words if not word.startswith("@"))
     return text_without_username.title()
 
 
