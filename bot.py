@@ -11,7 +11,8 @@ def check_mentions(client, last_checked):
     new_mentions = [
         notif
         for notif in mentions.notifications
-        if notif.reason == "mention" and notif.indexed_at > last_checked
+        if notif.reason == "mention"
+        and datetime.fromisoformat(notif.indexed_at) > last_checked
     ]
 
     return new_mentions
@@ -61,7 +62,7 @@ def main():
     client = Client()
     client.login(os.environ["BLUESKY_HANDLE"], os.environ["BLUESKY_PASSWORD"])
 
-    # Set last_checked to 15 minutes ago
+    # Set last_checked to 15 minutes ago in UTC
     last_checked = datetime.now(timezone.utc) - timedelta(minutes=15)
 
     new_mentions = check_mentions(client, last_checked)
