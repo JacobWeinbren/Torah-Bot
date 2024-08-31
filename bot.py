@@ -1,5 +1,6 @@
 import os
 from datetime import datetime, timedelta, timezone
+from dateutil.parser import isoparse
 from atproto import Client, models
 from main import main as generate_images
 
@@ -11,8 +12,7 @@ def check_mentions(client, last_checked):
     new_mentions = [
         notif
         for notif in mentions.notifications
-        if notif.reason == "mention"
-        and datetime.fromisoformat(notif.indexed_at) > last_checked
+        if notif.reason == "mention" and isoparse(notif.indexed_at) > last_checked
     ]
 
     return new_mentions
