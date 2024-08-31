@@ -1,5 +1,5 @@
 import os
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from atproto import Client, models
 from main import main as generate_images
 
@@ -61,7 +61,8 @@ def main():
     client = Client()
     client.login(os.environ["BLUESKY_HANDLE"], os.environ["BLUESKY_PASSWORD"])
 
-    last_checked = datetime.now() - timedelta(days=1)
+    # Set last_checked to 15 minutes ago
+    last_checked = datetime.now(timezone.utc) - timedelta(minutes=15)
 
     new_mentions = check_mentions(client, last_checked)
 
@@ -69,10 +70,6 @@ def main():
         if not has_replied(client, mention):
             images, alt_texts = generate_images(mention.record.text)
             post_reply(client, mention, images, alt_texts)
-
-    # Update last checked time
-    with open("last_checked.txt", "w") as f:
-        f.write(datetime.now().isoformat())
 
 
 if __name__ == "__main__":
