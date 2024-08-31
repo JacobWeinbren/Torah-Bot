@@ -59,15 +59,9 @@ def main(input_text):
             images.append(filename)
             alt_texts.append(f"Image {i} of {len(segments)}: {ref}")
 
-        print(f"Generated {len(segments)} image(s).")
+        image_count = len(segments)
+        print(f"Generated {'image' if image_count == 1 else 'images'}: {image_count}")
         return images, alt_texts, reference
     except Exception as e:
         print(f"An error occurred: {str(e)}")
         return [], [], ""
-
-
-if __name__ == "__main__":
-    sample_input = (
-        "@bot this contains complex text. something like this: shemot 14:19-30"
-    )
-    main(sample_input)

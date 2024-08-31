@@ -42,10 +42,13 @@ def post_reply(client, mention, images, alt_texts, reference):
         ]
     )
 
+    image_count = len(images)
+    image_text = "image" if image_count == 1 else "images"
+
     client.app.bsky.feed.post.create(
         repo=client.me.did,
         record={
-            "text": f"Here are the generated images for {reference}:",
+            "text": f"Here {'is' if image_count == 1 else 'are'} the generated {image_text} for {reference}:",
             "reply": {
                 "parent": {"uri": mention.uri, "cid": mention.cid},
                 "root": {"uri": mention.uri, "cid": mention.cid},
@@ -68,7 +71,10 @@ def main():
     for mention in new_mentions:
         if not has_replied(client, mention):
             images, alt_texts, reference = generate_images(mention.record.text)
-            post_reply(client, mention, images, alt_texts, reference)
+            if images and alt_texts and reference:
+                post_reply(client, mention, images, alt_texts, reference)
+            else:
+                print(f"Error processing mention: {mention.record.text}")
 
 
 if __name__ == "__main__":
