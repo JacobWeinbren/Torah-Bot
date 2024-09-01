@@ -59,7 +59,7 @@ def split_content(
 
     if len(segments) > max_segments:
         raise ValueError(
-            f"The requested passage is too long. It requires {len(segments)} segments, but only {max_segments} are allowed."
+            f"The requested passage is too long. It requires {len(segments)} pictures, but only {max_segments} are allowed."
         )
 
     if any(
