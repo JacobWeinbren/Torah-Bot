@@ -4,6 +4,7 @@ from text_processing import extract_text_from_data, split_content
 from html_generator import generate_html_content
 from screenshot_capture import capture_screenshot
 from utils import save_image
+import re
 
 
 def process_input(input_text):
@@ -12,12 +13,18 @@ def process_input(input_text):
     ).title()
 
 
+def remove_html_tags(text):
+    return re.sub("<[^<]+?>", "", text)
+
+
 def generate_image(ref, paired_lines, color1, color2, i):
     html_content = generate_html_content(ref, paired_lines, color1, color2)
     screenshot = capture_screenshot(html_content)
     filename = f"output_image_{i}.png"
     save_image(screenshot, filename)
-    return filename, "\n".join(f"{ref}\n{h}\n{e}" for h, e in paired_lines)
+    return filename, f"{ref}\n" + "\n".join(
+        f"{remove_html_tags(h)}\n{e}" for h, e in paired_lines
+    )
 
 
 def main(input_text):
