@@ -7,12 +7,16 @@ from utils import save_image
 import re
 import random
 import colorsys
+from titlecase import titlecase
 
 
 def process_input(input_text):
-    return " ".join(
+    # Remove words starting with '@' and join the remaining words
+    filtered_text = " ".join(
         word for word in input_text.split() if not word.startswith("@")
-    ).title()
+    )
+    # Apply proper title case
+    return titlecase(filtered_text)
 
 
 def remove_html_tags(text):
@@ -31,8 +35,8 @@ def generate_image(ref, paired_lines, color1, color2, i):
 
 def generate_vibrant_colors():
     hue = random.random()
-    saturation = 0.5
-    lightness = 0.9
+    saturation = 0.7
+    lightness = 0.85
 
     rgb1 = colorsys.hls_to_rgb(hue, lightness, saturation)
     rgb2 = colorsys.hls_to_rgb((hue + 0.33) % 1, lightness, saturation)
