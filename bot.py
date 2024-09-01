@@ -65,15 +65,40 @@ def post_reply(client, mention, images, alt_texts, reference):
     )
 
 
+def check_my_tweets(client, last_checked):
+    my_tweets = client.app.bsky.feed.get_author_feed(
+        {"actor": client.me.did, "limit": 50}
+    )
+
+    return [
+        tweet
+        for tweet in my_tweets.feed
+        if isoparse(tweet.post.record.created_at) > last_checked
+    ]
+
+
+def is_blacklisted(client, mention, my_tweets):
+    for tweet in my_tweets:
+        if tweet.post.uri == mention.uri or (
+            tweet.post.record.reply
+            and tweet.post.record.reply.parent.uri == mention.uri
+        ):
+            return True
+    return False
+
+
 def main():
     client = Client()
     client.login(os.environ["BLUESKY_HANDLE"], os.environ["BLUESKY_PASSWORD"])
 
     last_checked = datetime.now(timezone.utc) - timedelta(minutes=30)
     new_mentions = check_mentions(client, last_checked)
+    my_tweets = check_my_tweets(client, last_checked)
 
     for mention in new_mentions:
-        if not has_replied(client, mention):
+        if not has_replied(client, mention) and not is_blacklisted(
+            client, mention, my_tweets
+        ):
             try:
                 images, alt_texts, result = generate_images(mention.record.text)
                 if images and alt_texts:
