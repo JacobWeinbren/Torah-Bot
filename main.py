@@ -52,18 +52,21 @@ def generate_vibrant_colors():
 
 
 def main(input_text):
-    processed_text = process_input(input_text)
-    data = get_sefaria_data({"title": "", "body": processed_text})
-    reference, full_hebrew_text, full_english_text = extract_text_from_data(data)
-    segments = split_content(reference, full_hebrew_text, full_english_text)
+    try:
+        processed_text = process_input(input_text)
+        data = get_sefaria_data(processed_text)
+        reference, hebrew_text, english_text = extract_text_from_data(data)
+        segments = split_content(reference, hebrew_text, english_text)
 
-    color1, color2 = generate_vibrant_colors()
+        images = []
+        alt_texts = []
+        color1, color2 = generate_vibrant_colors()
 
-    images, alt_texts = zip(
-        *[
-            generate_image(ref, paired_lines, color1, color2, i)
-            for i, (ref, paired_lines) in enumerate(segments, 1)
-        ]
-    )
+        for i, (ref, paired_lines) in enumerate(segments):
+            image, alt_text = generate_image(ref, paired_lines, color1, color2, i)
+            images.append(image)
+            alt_texts.append(alt_text)
 
-    return list(images), list(alt_texts), reference
+        return images, alt_texts, reference
+    except ValueError as e:
+        return None, None, str(e)

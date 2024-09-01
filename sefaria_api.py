@@ -1,9 +1,18 @@
 import requests
 
 
+import requests
+
+
 def get_sefaria_data(text):
     url = "https://www.sefaria.org/api/find-refs?with_text=1"
-    response = requests.post(url, json={"text": text})
-    if response.status_code != 200:
-        raise Exception(f"Error: {response.status_code}\n{response.text}")
-    return response.json()
+    try:
+        response = requests.post(url, json={"text": text, "debug": True}, timeout=10)
+        response.raise_for_status()
+        return response.json()
+    except requests.exceptions.RequestException as e:
+        error_message = f"Error accessing Sefaria API: {str(e)}"
+        if hasattr(e, "response") and e.response is not None:
+            error_message += f"\nStatus code: {e.response.status_code}"
+            error_message += f"\nResponse text: {e.response.text[:200]}..."
+        raise Exception(error_message)
