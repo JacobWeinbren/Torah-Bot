@@ -6,8 +6,8 @@ from screenshot_capture import capture_screenshot
 from utils import save_image
 import re
 import random
-import colorsys
 from titlecase import titlecase
+from colour import Color
 
 
 def process_input(input_text):
@@ -34,19 +34,16 @@ def generate_image(ref, paired_lines, color1, color2, i):
 
 
 def generate_vibrant_colors():
+    # Generate a random hue
     hue = random.random()
-    saturation = 0.7
-    lightness = 0.85
 
-    rgb1 = colorsys.hls_to_rgb(hue, lightness, saturation)
-    rgb2 = colorsys.hls_to_rgb((hue + 0.33) % 1, lightness, saturation)
+    # Create two colors with the random hue, offset by 0.5 (complementary)
+    color1 = Color(hsl=(hue, 0.6, 0.85))
+    color2 = Color(hsl=((hue + 0.2) % 1, 0.6, 0.85))
 
-    hex1 = "#{:02x}{:02x}{:02x}".format(
-        int(rgb1[0] * 255), int(rgb1[1] * 255), int(rgb1[2] * 255)
-    )
-    hex2 = "#{:02x}{:02x}{:02x}".format(
-        int(rgb2[0] * 255), int(rgb2[1] * 255), int(rgb2[2] * 255)
-    )
+    # Convert to hex
+    hex1 = color1.hex_l
+    hex2 = color2.hex_l
 
     return hex1, hex2
 
@@ -70,3 +67,10 @@ def main(input_text):
         return images, alt_texts, reference
     except ValueError as e:
         return None, None, str(e)
+    except Exception as e:
+        print(f"Error type: {type(e).__name__}", e)
+        return (
+            None,
+            None,
+            "An unexpected error occurred.",
+        )

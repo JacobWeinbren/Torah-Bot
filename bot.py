@@ -75,14 +75,14 @@ def main():
     for mention in new_mentions:
         if not has_replied(client, mention):
             try:
-                images, alt_texts, reference = generate_images(mention.record.text)
-                if images and alt_texts and reference:
-                    post_reply(client, mention, images, alt_texts, reference)
+                images, alt_texts, result = generate_images(mention.record.text)
+                if images and alt_texts:
+                    post_reply(client, mention, images, alt_texts, result)
                 else:
                     client.app.bsky.feed.post.create(
                         repo=client.me.did,
                         record={
-                            "text": f"I'm sorry, but there was an issue processing your request for {reference}. Please try again with a different passage.",
+                            "text": f"I'm sorry, but there was an issue processing your request: {result}",
                             "reply": {
                                 "parent": {"uri": mention.uri, "cid": mention.cid},
                                 "root": {"uri": mention.uri, "cid": mention.cid},
@@ -96,7 +96,7 @@ def main():
                 client.app.bsky.feed.post.create(
                     repo=client.me.did,
                     record={
-                        "text": "I'm sorry, but an error occurred while processing your request. Please try again later.",
+                        "text": "I'm sorry, but an unexpected error occurred while processing your request. Please try again later.",
                         "reply": {
                             "parent": {"uri": mention.uri, "cid": mention.cid},
                             "root": {"uri": mention.uri, "cid": mention.cid},

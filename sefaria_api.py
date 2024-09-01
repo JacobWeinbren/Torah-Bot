@@ -1,13 +1,12 @@
 import requests
 
 
-import requests
-
-
-def get_sefaria_data(text):
-    url = "https://www.sefaria.org/api/find-refs?with_text=1"
+def get_sefaria_data(body):
+    url = "https://www.sefaria.org/api/find-refs"
+    params = {"with_text": 1}
+    data = {"text": {"title": "", "body": body}}
     try:
-        response = requests.post(url, json={"text": text, "debug": True}, timeout=10)
+        response = requests.post(url, params=params, json=data, timeout=10)
         response.raise_for_status()
         return response.json()
     except requests.exceptions.RequestException as e:
