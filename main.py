@@ -31,17 +31,20 @@ def generate_image(ref, paired_lines, color1, color2, i):
 
 def generate_vibrant_colors():
     hue = random.random()
-    saturation = 0.7
-    lightness = 0.5
-    
+    saturation = 0.3
+    lightness = 0.85
+
     rgb1 = colorsys.hls_to_rgb(hue, lightness, saturation)
     rgb2 = colorsys.hls_to_rgb((hue + 0.33) % 1, lightness, saturation)
-    
-    hex1 = '#{:02x}{:02x}{:02x}'.format(int(rgb1[0]*255), int(rgb1[1]*255), int(rgb1[2]*255))
-    hex2 = '#{:02x}{:02x}{:02x}'.format(int(rgb2[0]*255), int(rgb2[1]*255), int(rgb2[2]*255))
-    
-    return hex1, hex2
 
+    hex1 = "#{:02x}{:02x}{:02x}".format(
+        int(rgb1[0] * 255), int(rgb1[1] * 255), int(rgb1[2] * 255)
+    )
+    hex2 = "#{:02x}{:02x}{:02x}".format(
+        int(rgb2[0] * 255), int(rgb2[1] * 255), int(rgb2[2] * 255)
+    )
+
+    return hex1, hex2
 
 
 def main(input_text):
