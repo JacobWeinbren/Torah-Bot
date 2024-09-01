@@ -23,13 +23,14 @@ def main(input_text):
     images = []
     alt_texts = []
     reference = ""
+    hebrew_texts = []
+    english_texts = []
 
     try:
         data = get_sefaria_data(text)
-        reference, hebrew_text, english_text = extract_text_from_data(data)
-        segments = split_content(reference, hebrew_text, english_text)
+        reference, full_hebrew_text, full_english_text = extract_text_from_data(data)
+        segments = split_content(reference, full_hebrew_text, full_english_text)
 
-        # Generate random colors once for all images
         colors = [
             "red",
             "orange",
@@ -57,11 +58,17 @@ def main(input_text):
             filename = f"output_image_{i}.png"
             save_image(screenshot, filename)
             images.append(filename)
-            alt_texts.append(f"Image {i} of {len(segments)}: {ref}")
+            
+            segment_hebrew = "\n".join([pair[0] for pair in paired_lines])
+            segment_english = "\n".join([pair[1] for pair in paired_lines])
+            hebrew_texts.append(segment_hebrew)
+            english_texts.append(segment_english)
+            alt_texts.append(f"{ref}\n{segment_hebrew}\n{segment_english}")
 
         image_count = len(segments)
         print(f"Generated {'image' if image_count == 1 else 'images'}: {image_count}")
-        return images, alt_texts, reference
+        return images, alt_texts, reference, hebrew_texts, english_texts
     except Exception as e:
         print(f"An error occurred: {str(e)}")
-        return [], [], ""
+        return [], [], "", [], []
+
