@@ -1,8 +1,6 @@
 name: Bluesky Bot
 
 on:
-    repository_dispatch:
-        types: [trigger_bot]
     workflow_dispatch:
 
 jobs:
