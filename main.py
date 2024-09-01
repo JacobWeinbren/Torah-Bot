@@ -31,8 +31,8 @@ def generate_image(ref, paired_lines, color1, color2, i):
 
 def generate_vibrant_colors():
     hue = random.random()
-    saturation = 0.3
-    lightness = 0.85
+    saturation = 0.5
+    lightness = 0.9
 
     rgb1 = colorsys.hls_to_rgb(hue, lightness, saturation)
     rgb2 = colorsys.hls_to_rgb((hue + 0.33) % 1, lightness, saturation)
