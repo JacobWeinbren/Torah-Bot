@@ -6,16 +6,12 @@ from main import main as generate_images
 
 
 def check_mentions(client, last_checked):
-    # Fetch mentions since last check
     mentions = client.app.bsky.notification.list_notifications({"limit": 50})
-
-    new_mentions = [
+    return [
         notif
         for notif in mentions.notifications
         if notif.reason == "mention" and isoparse(notif.indexed_at) > last_checked
     ]
-
-    return new_mentions
 
 
 def has_replied(client, mention):
@@ -70,18 +66,14 @@ def main():
 
     for mention in new_mentions:
         if not has_replied(client, mention):
-            images, alt_texts, reference, hebrew_texts, english_texts = generate_images(
-                mention.record.text
-            )
-            if images and alt_texts and reference and hebrew_texts and english_texts:
+            images, alt_texts, reference = generate_images(mention.record.text)
+            if images and alt_texts and reference:
                 post_reply(
                     client,
                     mention,
                     images,
                     alt_texts,
                     reference,
-                    hebrew_texts,
-                    english_texts,
                 )
             else:
                 print(f"Error processing mention: {mention.record.text}")
