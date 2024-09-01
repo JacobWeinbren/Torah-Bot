@@ -23,7 +23,7 @@ def generate_image(ref, paired_lines, color1, color2, i):
     filename = f"output_image_{i}.png"
     save_image(screenshot, filename)
     return filename, f"{ref}\n" + "\n".join(
-        f"{remove_html_tags(h)}\n{e}" for h, e in paired_lines
+        f"{remove_html_tags(h)}\n{remove_html_tags(e)}" for h, e in paired_lines
     )
 
 
