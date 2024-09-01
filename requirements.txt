@@ -5,6 +5,7 @@ certifi==2024.8.30
 cffi==1.17.0
 charset-normalizer==3.3.2
 click==8.1.7
+colour==0.1.5
 cryptography==42.0.8
 dnspython==2.6.1
 grapheme==0.6.0

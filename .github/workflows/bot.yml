@@ -16,7 +16,7 @@ jobs:
               with:
                   python-version: "3.9"
 
-            - name: Cache pip dependencies
+            - name: Cache pip packages
               uses: actions/cache@v2
               with:
                   path: ~/.cache/pip
