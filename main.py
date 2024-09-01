@@ -5,6 +5,8 @@ from html_generator import generate_html_content
 from screenshot_capture import capture_screenshot
 from utils import save_image
 import re
+import random
+import colorsys
 
 
 def process_input(input_text):
@@ -27,32 +29,28 @@ def generate_image(ref, paired_lines, color1, color2, i):
     )
 
 
+def generate_vibrant_colors():
+    hue = random.random()
+    saturation = 0.7
+    lightness = 0.5
+    
+    rgb1 = colorsys.hls_to_rgb(hue, lightness, saturation)
+    rgb2 = colorsys.hls_to_rgb((hue + 0.33) % 1, lightness, saturation)
+    
+    hex1 = '#{:02x}{:02x}{:02x}'.format(int(rgb1[0]*255), int(rgb1[1]*255), int(rgb1[2]*255))
+    hex2 = '#{:02x}{:02x}{:02x}'.format(int(rgb2[0]*255), int(rgb2[1]*255), int(rgb2[2]*255))
+    
+    return hex1, hex2
+
+
+
 def main(input_text):
     processed_text = process_input(input_text)
     data = get_sefaria_data({"title": "", "body": processed_text})
     reference, full_hebrew_text, full_english_text = extract_text_from_data(data)
     segments = split_content(reference, full_hebrew_text, full_english_text)
 
-    colors = [
-        "red",
-        "orange",
-        "amber",
-        "yellow",
-        "lime",
-        "green",
-        "emerald",
-        "teal",
-        "cyan",
-        "sky",
-        "blue",
-        "indigo",
-        "violet",
-        "purple",
-        "fuchsia",
-        "pink",
-        "rose",
-    ]
-    color1, color2 = random.sample(colors, 2)
+    color1, color2 = generate_vibrant_colors()
 
     images, alt_texts = zip(
         *[
