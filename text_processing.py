@@ -23,23 +23,36 @@ def extract_text_from_data(data):
     return ref, "\n".join(hebrew_texts), "\n".join(english_texts)
 
 
-def split_content(reference, hebrew_text, english_text, max_chars=1000, max_segments=4):
+def split_content(
+    reference,
+    hebrew_text,
+    english_text,
+    max_chars=1000,
+    max_segments=4,
+    max_lines_per_segment=4,
+):
     hebrew_lines = hebrew_text.split("\n")
     english_lines = english_text.split("\n")
 
     segments = []
     current_segment = []
     current_length = len(reference)
+    current_line_count = 0
 
     for h, e in zip_longest(hebrew_lines, english_lines, fillvalue=""):
         line_length = len(h) + len(e) + 3  # +3 for newline and space
-        if current_length + line_length > max_chars and current_segment:
+        if (
+            current_length + line_length > max_chars
+            or current_line_count >= max_lines_per_segment
+        ) and current_segment:
             segments.append((reference, current_segment))
             current_segment = []
             current_length = len(reference)
+            current_line_count = 0
 
         current_segment.append((h, e))
         current_length += line_length
+        current_line_count += 1
 
     if current_segment:
         segments.append((reference, current_segment))
